@@ -1,0 +1,40 @@
+[project]
+name = "flashvid"
+version = "0.1.0"
+readme = "README.md"
+license = { text = "MIT" }
+description = "FlashVID: Efficient Video Large Language Models via Training-free Tree-based Spatiotemporal Token Merging"
+authors = [{ name = "Ziyang Fan", email = "bugkiller.fzy@gmail.com" }]
+requires-python = ">=3.10"
+dependencies = [
+    "decord>=0.6.0",
+    "flash-attn>=2.8.3",
+    "lmms-eval>=0.5.0",
+    "torch>=2.5.1",
+    "torchvision>=0.20.1",
+    "transformers==4.57.3",
+]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu121" }
+lmms-eval = { path = "./lmms-eval", editable = true}
+
+[[tool.uv.index]]
+name = "pytorch-cu121"
+url = "https://download.pytorch.org/whl/cu121"
+explicit = true
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["flashvid*", "llava*"]
+
+[tool.uv.extra-build-dependencies]
+flash-attn = ["torch"]
+
+[project.urls]
+"Homepage" = "https://flashvid.github.io"
+"Repository" = "https://github.com/Fanziyang-v/FlashVID"
+"Bug Tracker" = "https://github.com/Fanziyang-v/FlashVID/issues"
