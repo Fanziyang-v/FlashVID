@@ -82,6 +82,22 @@ class Llava_OneVision(lmms):
         mm_spatial_pool_mode: Optional[str] = "bilinear",
         token_strategy: Optional[str] = "single",  # could be "single" or "multiple", "multiple" denotes adding multiple <image> tokens for each frame
         video_decode_backend: str = "decord",
+        # ! FlashVid parameters.
+        enable_flashvid: bool = False,
+        retention_ratio: float = 0.25,
+        # DySeg parameters (FIXED)
+        do_segment: bool = True,
+        segment_threshold: float = 0.9,
+        min_segment_num: int = 8,
+        complementary_segment: bool = True,
+        # ADTS and TSTM parameters
+        token_selection_method: str = "attn_div_v2",
+        alpha: float = 0.7,
+        temporal_threshold: float = 0.8,
+        # Inner-LLM Pruning parameters (FIXED)
+        expansion: float = 1.25,
+        pruning_layer: int = 20,
+        llm_retention_ratio: float = 0.3,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -143,6 +159,26 @@ class Llava_OneVision(lmms):
                 device_map=self.device_map,
                 **llava_model_args,
             )
+
+        # ! Enable FlashVID
+        if enable_flashvid:
+            from flashvid import flashvid
+
+            self._model = flashvid(
+                model=self._model,
+                retention_ratio=retention_ratio,
+                do_segment=do_segment,
+                segment_threshold=segment_threshold,
+                min_segment_num=min_segment_num,
+                complementary_segment=complementary_segment,
+                alpha=alpha,
+                token_selection_method=token_selection_method,
+                temporal_threshold=temporal_threshold,
+                expansion=expansion,
+                pruning_layer=pruning_layer,
+                llm_retention_ratio=llm_retention_ratio,
+            )
+            # print(f"[INFO] Enable FlashVID with retention_ratio={retention_ratio}, expansion={expansion}, do_segment={do_segment}, segment_threshold={segment_threshold}, min_segment_num={min_segment_num}, complementary_segment={complementary_segment}, token_selection_method={token_selection_method}, alpha={alpha}, temporal_threshold={temporal_threshold}, pruning_layer={pruning_layer}, llm_retention_ratio={llm_retention_ratio}")
 
         self._config = self._model.config
         self.model.eval()
