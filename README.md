@@ -27,8 +27,8 @@
 
 ## 📋Todo List
 
-- [ ] Release FlashVID code on LLaVA-OneVision and LLaVA-Video.
-- [ ] Release inference demos on different Video LLMs with FlashVID.
+- [x] Release FlashVID code on LLaVA-OneVision and LLaVA-Video.
+- [x] Release inference demos on different Video LLMs with FlashVID.
 - [ ] Support evaluation using [LMMs-Eval](https://github.com/EvolvingLMMs-Lab/lmms-eval).
 - [ ] Release FlashVID code on Qwen2.5-VL and Qwen3-VL.
 
