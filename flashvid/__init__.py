@@ -76,10 +76,5 @@ def flashvid(
     # Store FlashVid Config in the model.
     setattr(model, "flashvid_config", flashvid_config)
     setattr(model.model, "flashvid_config", flashvid_config)
-    if type(model) in (
-        Qwen2_5_VLForConditionalGeneration,
-        Qwen3VLForConditionalGeneration,
-    ):
-        setattr(model.model.language_model, "flashvid_config", flashvid_config)
 
     return model
