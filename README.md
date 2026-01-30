@@ -16,8 +16,11 @@
 3. [Highlights](#highlights)
 4. [Motivation](#motivation)
 5. [Method](#method)
-6. [Acknowledgement](#acknowledgement)
-7. [Citation](#citation)
+6. [Installation](#installation)
+7. [Quickstart](#quickstart)
+8. [Evaluation](#evaluation)
+9. [Acknowledgement](#acknowledgement)
+10. [Citation](#citation)
 
 ## 🔥News
 
@@ -59,6 +62,61 @@ To achieve better spatiotemporal redundancy compression, we present a **simple y
 
 1. **Attention and Diversity-based Token Selection (ADTS)** prioritizes spatiotemporally informative tokens while ensuring feature diversity by solving a calibrated Max-Min Diversity Problem (MMDP);
 2. **Tree-based Saptiotemporal Token Merging (TSTM)** models redundancy by spatiotemporal redundancy trees, which effectively capture fine-grained video dynamics. Each redundancy tree will be aggregated into a single token representation.
+
+
+## 📦Installation
+
+In this project, we use [uv](https://github.com/astral-sh/uv) for package management.
+
+1. **Clone this repository and navigate to the FlashVID folder:**
+
+```bash
+git clone https://github.com/Fanziyang-v/FlashVID.git
+cd FlashVID
+```
+
+2. **Install the inference package:**
+
+```bash
+uv sync
+```
+
+## 🚀Quickstart
+
+FlashVID's code is easy to use and works out of the box. Just wrap the model with the `flashvid()` function. Currently, FlashVID supports LLaVA-OneVision and LLaVA-Video.
+
+```python
+from flashvid import flashvid
+
+model = flashvid(
+    model,
+    retention_ratio=0.1,
+    alpha=0.7,
+    temporal_threshold=0.8,
+)
+```
+
+📝**Note**: You can override the default parameters (e.g., retention ratio) in the `flashvid()` wrapper function.
+
+Inference demos are provided in `playground/`. Here is an running example:
+
+```bash
+python playground/llava_ov_infer.py \
+    --video-path assets/Qgr4dcsY-60.mp4 \
+    --question "Describe the video in detail." \
+    --num-frames 32 \
+    --enable-flashvid
+```
+
+## 📊Evaluation
+
+In this project, all the experiments are conducted using [LMMs-Eval](https://github.com/EvolvingLMMs-Lab/lmms-eval). We provide FlashVID evaluation scripts in `scripts/`, including LLaVA-OneVision, LLaVA-Video, Qwen2.5-VL, and Qwen3-VL. You can run the scripts to reproduce our experimental results:
+
+```bash
+bash scripts/llava_ov.sh
+```
+
+📝**Note**: It is extremely easy to integrate FlashVID into LMMs-Eval by adding specific parameters in `__init__()` and wrapping the loaded model with the `flashvid()` function. (See `lmms_eval/models/simple/llava_onevision.py`)
 
 ## 👏Acknowledgement
 
