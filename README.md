@@ -12,7 +12,7 @@
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License"></a> &nbsp;
 <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/PyTorch-2.5%2B-DF3411.svg" alt="PyTorch"></a> &nbsp;
 <a href="https://python.org/"><img src="https://img.shields.io/badge/Python-3.10%2B-3776ab.svg" alt="Python"></a> &nbsp;
-<a href="https://python.org/"><img src="https://img.shields.io/badge/transformers-4.57-FFD21E.svg" alt="Python"></a> &nbsp;
+<a href="https://huggingface.co/"><img src="https://img.shields.io/badge/transformers-4.57-FFD21E.svg" alt="Python"></a> &nbsp;
 <!-- <a href='https://flashvid.github.io/'><img src='https://img.shields.io/badge/Project-Page-Green'></a> &nbsp; -->
 <!-- <a href="#"><img src="https://img.shields.io/badge/#.svg"></a> &nbsp; -->
 </div>
