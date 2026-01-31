@@ -8,7 +8,7 @@ authors = [{ name = "Ziyang Fan", email = "bugkiller.fzy@gmail.com" }]
 requires-python = ">=3.10"
 dependencies = [
     "decord>=0.6.0",
-    "flash-attn>=2.8.3",
+    "flash-attn>=2.7.3",
     "lmms-eval>=0.5.0",
     "torch>=2.5.1",
     "torchvision>=0.20.1",
