@@ -10,6 +10,8 @@
 <a href='https://iclr.cc/'><img src='https://img.shields.io/badge/ICLR-2026-78CA2E.svg'></a> &nbsp;
 <a href='https://openreview.net/forum?id=H6rDX4w6Al'><img src='https://img.shields.io/badge/Paper-Openreview-8D1B12.svg'></a> &nbsp;
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License"></a> &nbsp;
+<a href="https://pytorch.org/"><img src="https://img.shields.io/badge/PyTorch-2.0%2B-DF3411.svg" alt="PyTorch"></a>
+<a href="https://python.org/"><img src="https://img.shields.io/badge/Python-3.10%2B-3776ab.svg" alt="Python"></a>
 <!-- <a href='https://flashvid.github.io/'><img src='https://img.shields.io/badge/Project-Page-Green'></a> &nbsp; -->
 <!-- <a href="#"><img src="https://img.shields.io/badge/arXiv-2509.02460-b31b1b.svg"></a> &nbsp; -->
 </div>
