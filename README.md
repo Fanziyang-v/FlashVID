@@ -8,6 +8,8 @@
 <sup>*</sup>Corresponding Author
 </div>
 
+---
+This repository is the official implementation of [FlashVID](https://openreview.net/pdf?id=H6rDX4w6Al).
 
 ## 🔖Table of Contents
 
@@ -24,6 +26,7 @@
 
 ## 🔥News
 
+- [2025.01.30] ✨Release FlashVID code and inference demos on LLaVA-OneVision and LLaVA-Video.
 - [2025.01.30] 👏Initialize this GitHub repository for [FlashVID](#).
 - [2025.12.06] 🌟Release the GitHub repository of [DyTok](https://github.com/yu-lin-li/DyToK).
 - [2025.09.18] 🎉 Our training-free and plug-and-play inference acceleration framework [DyTok](https://www.arxiv.org/abs/2512.06866) has been accepted at **NeurIPS 2025**.
@@ -33,6 +36,7 @@
 - [x] Release FlashVID code on LLaVA-OneVision and LLaVA-Video.
 - [x] Release inference demos on different Video LLMs with FlashVID.
 - [x] Support evaluation using [LMMs-Eval](https://github.com/EvolvingLMMs-Lab/lmms-eval).
+- [ ] Release our paper on arXiv.
 - [ ] Release FlashVID code on Qwen2.5-VL and Qwen3-VL.
 
 ## ✨Highlights
