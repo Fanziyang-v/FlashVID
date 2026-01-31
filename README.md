@@ -13,7 +13,7 @@
 <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/PyTorch-2.5%2B-DF3411.svg" alt="PyTorch"></a>
 <a href="https://python.org/"><img src="https://img.shields.io/badge/Python-3.10%2B-3776ab.svg" alt="Python"></a>
 <!-- <a href='https://flashvid.github.io/'><img src='https://img.shields.io/badge/Project-Page-Green'></a> &nbsp; -->
-<!-- <a href="#"><img src="https://img.shields.io/badge/arXiv-2509.02460-b31b1b.svg"></a> &nbsp; -->
+<!-- <a href="#"><img src="https://img.shields.io/badge/#.svg"></a> &nbsp; -->
 </div>
 
 ## 🔖Table of Contents
@@ -31,8 +31,9 @@
 
 ## 🔥News
 
-- [2025.01.30] ✨Release FlashVID code and inference demos on LLaVA-OneVision and LLaVA-Video.
-- [2025.01.30] 👏Initialize this GitHub repository for [FlashVID](#).
+- [2026.01.30] ✨Release FlashVID code and inference demos on LLaVA-OneVision and LLaVA-Video.
+- [2026.01.30] 👏Initialize this GitHub repository for [FlashVID](#).
+- [2026.01.26] 🎉Our training-free and plug-and-play inference acceleration method [FlashVID](https://openreview.net/forum?id=H6rDX4w6Al) has been accepted at **ICLR 2026**.
 - [2025.12.06] 🌟Release the GitHub repository of [DyTok](https://github.com/yu-lin-li/DyToK).
 - [2025.09.18] 🎉 Our training-free and plug-and-play inference acceleration framework [DyTok](https://www.arxiv.org/abs/2512.06866) has been accepted at **NeurIPS 2025**.
 
