@@ -33,10 +33,10 @@
 ## 🔥News
 
 - [2026.01.30] ✨Release FlashVID code and inference demos on LLaVA-OneVision and LLaVA-Video.
-- [2026.01.30] 👏Initialize this GitHub repository for [FlashVID](#).
-- [2026.01.26] 🎉Our training-free and plug-and-play inference acceleration method [FlashVID](https://openreview.net/forum?id=H6rDX4w6Al) has been accepted at **ICLR 2026**.
+- [2026.01.30] 👏Initialize this GitHub repository.
+- [2026.01.26] 🎉Our training-free inference acceleration method [FlashVID](https://openreview.net/forum?id=H6rDX4w6Al) has been accepted at **ICLR 2026**.
 - [2025.12.06] 🌟Release the GitHub repository of [DyTok](https://github.com/yu-lin-li/DyToK).
-- [2025.09.18] 🎉 Our training-free and plug-and-play inference acceleration framework [DyTok](https://www.arxiv.org/abs/2512.06866) has been accepted at **NeurIPS 2025**.
+- [2025.09.18] 🎉 Our training-freeinference acceleration framework [DyTok](https://www.arxiv.org/abs/2512.06866) has been accepted at **NeurIPS 2025**.
 
 ## 📋Todo List
 
