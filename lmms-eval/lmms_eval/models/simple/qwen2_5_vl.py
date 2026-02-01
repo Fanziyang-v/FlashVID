@@ -54,6 +54,22 @@ class Qwen2_5_VL(lmms):
         system_prompt: Optional[str] = "You are a helpful assistant.",
         interleave_visuals: Optional[bool] = False,
         reasoning_prompt: Optional[str] = None,
+        # ! FlashVid parameters.
+        enable_flashvid: bool = False,
+        retention_ratio: float = 0.25,
+        # DySeg parameters (Fixed)
+        do_segment: bool = True,
+        segment_threshold: float = 0.9,
+        min_segment_num: int = 8,
+        complementary_segment: bool = True,
+        # ADTS and TSTM parameters
+        token_selection_method: str = "attn_div_v2",
+        alpha: float = 0.7,
+        temporal_threshold: float = 0.8,
+        # Inner-LLM Pruning parameters
+        expansion: float = 1.25,
+        pruning_layer: int = 20,
+        llm_retention_ratio: float = 0.3,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -92,7 +108,30 @@ class Qwen2_5_VL(lmms):
         if attn_implementation is not None:
             model_kwargs["attn_implementation"] = attn_implementation
 
-        self._model = Qwen2_5_VLForConditionalGeneration.from_pretrained(pretrained, **model_kwargs).eval()
+        self._model = Qwen2_5_VLForConditionalGeneration.from_pretrained(pretrained, **model_kwargs)
+        
+        
+        # ! Enable FlashVID
+        if enable_flashvid:
+            from flashvid import flashvid
+
+            self._model = flashvid(
+                model=self._model,
+                retention_ratio=retention_ratio,
+                expansion=expansion,
+                do_segment=do_segment,
+                segment_threshold=segment_threshold,
+                min_segment_num=min_segment_num,
+                complementary_segment=complementary_segment,
+                token_selection_method=token_selection_method,
+                alpha=alpha,
+                temporal_threshold=temporal_threshold,
+                pruning_layer=pruning_layer,
+                llm_retention_ratio=llm_retention_ratio,
+            )
+            # print(f"[INFO] Enable FlashVID with retention_ratio={retention_ratio}, expansion={expansion}, do_segment={do_segment}, segment_threshold={segment_threshold}, min_segment_num={min_segment_num}, complementary_segment={complementary_segment}, token_selection_method={token_selection_method}, alpha={alpha}, temporal_threshold={temporal_threshold}, pruning_layer={pruning_layer}, llm_retention_ratio={llm_retention_ratio}")
+
+        self._model.eval()
         self.max_pixels = max_pixels
         self.min_pixels = min_pixels
         self.max_num_frames = max_num_frames
