@@ -44,8 +44,8 @@
 - [x] Release FlashVID code on LLaVA-OneVision and LLaVA-Video.
 - [x] Release inference demos on different Video LLMs with FlashVID.
 - [x] Support evaluation using [LMMs-Eval](https://github.com/EvolvingLMMs-Lab/lmms-eval).
+- [x] Release FlashVID code on Qwen2.5-VL and Qwen3-VL.
 - [ ] Release our paper on arXiv.
-- [ ] Release FlashVID code on Qwen2.5-VL and Qwen3-VL.
 
 ## ✨Highlights
 
@@ -95,7 +95,7 @@ uv sync
 
 ## 🚀Quickstart
 
-FlashVID's code is easy to use and works out of the box. Just wrap the model with the `flashvid()` function. Currently, FlashVID supports LLaVA-OneVision and LLaVA-Video.
+FlashVID's code is easy to use and works out of the box. Just wrap the model with the `flashvid()` function. Currently, FlashVID supports LLaVA-OneVision, LLaVA-Video, Qwen2.5-VL, and Qwen3-VL.
 
 ```python
 from flashvid import flashvid
