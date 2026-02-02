@@ -32,8 +32,9 @@
 
 ## 🔥News
 
+- [2026.02.01] ✨Release FlashVID code and inference demos on *Qwen2.5-VL* and *Qwen3-VL*.
 - [2026.01.31] 🚀Release this repository to the public.
-- [2026.01.30] ✨Release FlashVID code and inference demos on LLaVA-OneVision and LLaVA-Video.
+- [2026.01.30] ✨Release FlashVID code and inference demos on *LLaVA-OneVision* and *LLaVA-Video*.
 - [2026.01.30] 👏Initialize this GitHub repository.
 - [2026.01.26] 🎉Our training-free inference acceleration method [FlashVID](https://openreview.net/forum?id=H6rDX4w6Al) has been accepted at **ICLR 2026**.
 - [2025.12.06] 🌟Release the GitHub repository of [DyTok](https://github.com/yu-lin-li/DyToK).
