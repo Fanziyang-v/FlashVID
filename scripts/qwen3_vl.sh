@@ -20,8 +20,9 @@ ALPHA=0.70
 TEMPORAL_THRESHOLD=0.8
 ## Inner-LLM Pruning (fixed)
 EXPANSION=1.25
-PRUNING_LAYER=20
-LLM_RETENTION_RATIO=0.3
+# Unlike Qwen2.5-VL, Qwen3-VL has 36 layers, so we set K = 28 (a relatively high layer) and r = 0.1 for inner-LLM compression.
+PRUNING_LAYER=28
+LLM_RETENTION_RATIO=0.1
 
 BASE_FLASHVID_ARGS="enable_flashvid=True,expansion=$EXPANSION,do_segment=$DO_SEGMENT,min_segment_num=$MIN_SEGMENT_NUM,complementary_segment=$COMPLEMENTARY_SEGMENT,token_selection_method=$TOKEN_SELECTION_METHOD,alpha=$ALPHA,temporal_threshold=$TEMPORAL_THRESHOLD,pruning_layer=$PRUNING_LAYER,llm_retention_ratio=$LLM_RETENTION_RATIO"
 
