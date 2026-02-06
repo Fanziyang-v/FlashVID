@@ -32,6 +32,7 @@
 
 ## 🔥News
 
+- [2026.02.06] 🍾Our paper has been selected as an **Oral Presentation** at **ICLR 2026**.
 - [2026.02.01] ✨Release FlashVID code and inference demos on *Qwen2.5-VL* and *Qwen3-VL*.
 - [2026.01.31] 🚀Release this repository to the public.
 - [2026.01.30] ✨Release FlashVID code and inference demos on *LLaVA-OneVision* and *LLaVA-Video*.
