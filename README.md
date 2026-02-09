@@ -148,3 +148,7 @@ If you find this project useful in your research, please consider citing:
   year={2026}
 }
 ```
+
+## ⭐️Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Fanziyang-v/FlashVID&type=Date)](https://star-history.com/#Fanziyang-v/FlashVID&Date)
