@@ -146,7 +146,7 @@ If you find this project useful in your research, please consider citing:
 @inproceedings{fan2026flashvid,
   title={FlashVID: Efficient Video Large Language Models via Training-free Tree-based Spatiotemporal Token Merging},
   author={Fan, Ziyang and Chen, Keyu and Xing, Ruilong and Li, Yulin and Jiang, Li and Tian, Zhuotao},
-  journal={Proceedings of the 14th International Conference on Learning Representations},
+  booktitle={Proceedings of the 14th International Conference on Learning Representations},
   year={2026}
 }
 ```
