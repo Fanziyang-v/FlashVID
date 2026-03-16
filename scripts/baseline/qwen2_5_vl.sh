@@ -14,7 +14,8 @@ MAX_NUM_FRAMES=32
 # MIN_PIXELS=50716 # 64*28*28
 # MAX_PIXELS=200704 # 256*28*28
 ATTN_IMPLEMENTATION=flash_attention_2
-BASE_MODEL_ARGS="pretrained=$PRETRAINED,max_num_frames=$MAX_NUM_FRAMES,max_pixels=$MAX_PIXELS,min_pixels=$MIN_PIXELS,attn_implementation=$ATTN_IMPLEMENTATION"
+# BASE_MODEL_ARGS="pretrained=$PRETRAINED,max_num_frames=$MAX_NUM_FRAMES,max_pixels=$MAX_PIXELS,min_pixels=$MIN_PIXELS,attn_implementation=$ATTN_IMPLEMENTATION"
+BASE_MODEL_ARGS="pretrained=$PRETRAINED,max_num_frames=$MAX_NUM_FRAMES,attn_implementation=$ATTN_IMPLEMENTATION"
 
 MODEL_ARGS="enable_flashvid=False,$BASE_MODEL_ARGS"
 for task in "${TASKS[@]}"; do
