@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union, List
 
 import math
 import torch
@@ -142,24 +142,47 @@ def segment_compression(
         # Calculate adaptive contextual ratio.
         num_current_retained_tokens = sum(len(tokens) for tokens in temp_merged_token_list)
         adapative_contextual_ratio = num_other_tokens / num_current_retained_tokens
-        for temp_merged_tokens, temp_merged_global_indices in zip(temp_merged_token_list, temp_merged_global_indices_list):
-            num_tokens, _ = temp_merged_tokens.shape
-            aggregated_tokens = temp_merged_tokens
-            global_token_indices = temp_merged_global_indices
-            num_clusters = math.ceil(num_tokens * adapative_contextual_ratio)
-            if num_clusters > 0 and adapative_contextual_ratio < 1.0:
-                # Density Peak Clustering with kNN (DPC-kNN).
-                cluster_indices, cluster_center_indices = dpc_knn(
-                    features=temp_merged_tokens.unsqueeze(0),
-                    num_clusters=num_clusters,
-                    k=min(num_clusters, 7),
-                )
-                assigned_one_hot = F.one_hot(cluster_indices[0], num_classes=num_clusters).to(segment_features.dtype)
-                aggregated_tokens = torch.einsum("n c, n d -> c d", assigned_one_hot, temp_merged_tokens)
-                aggregated_tokens = aggregated_tokens / assigned_one_hot.sum(dim=0).unsqueeze(-1)
-                global_token_indices = temp_merged_global_indices[cluster_center_indices[0]]
-            all_tokens.append(aggregated_tokens)
-            all_global_indices.append(global_token_indices)
+        if adapative_contextual_ratio < 1.0:
+            num_frames_in_segment = len(temp_merged_token_list)
+            max_num_tokens = max(len(tokens) for tokens in temp_merged_token_list)
+            batched_tokens = torch.zeros((num_frames_in_segment, max_num_tokens, feat_dim), dtype=segment_features.dtype, device=segment_features.device)
+            valid_token_mask = torch.zeros((num_frames_in_segment, max_num_tokens), dtype=torch.bool, device=segment_features.device)
+            num_clusters_list = []
+            k_list = []
+            for i, temp_merged_tokens in enumerate(temp_merged_token_list):
+                num_tokens = len(temp_merged_tokens)
+                batched_tokens[i, :num_tokens] = temp_merged_tokens
+                valid_token_mask[i, :num_tokens] = True
+                num_clusters = math.ceil(num_tokens * adapative_contextual_ratio)
+                num_clusters_list.append(num_clusters)
+                k_list.append(min(num_clusters, 7))
+            cluster_indices_list, cluster_center_indices_list = dpc_knn(
+                features=batched_tokens,
+                num_clusters=num_clusters_list,
+                k=k_list,
+                valid_token_mask=valid_token_mask,
+            )
+            for i, (temp_merged_tokens, temp_merged_global_indices) in enumerate(zip(temp_merged_token_list, temp_merged_global_indices_list)):
+                num_clusters = num_clusters_list[i]
+                if num_clusters > 0:
+                    cluster_indices = cluster_indices_list[i][:len(temp_merged_tokens)]
+                    cluster_center_indices = cluster_center_indices_list[i]
+                    aggregated_tokens = torch.zeros((num_clusters, feat_dim), dtype=segment_features.dtype, device=segment_features.device)
+                    aggregated_tokens.scatter_add_(0, cluster_indices.unsqueeze(-1).expand(-1, feat_dim), temp_merged_tokens)
+                    cluster_counts = torch.bincount(cluster_indices, minlength=num_clusters).unsqueeze(-1).to(segment_features.dtype)
+                    aggregated_tokens = aggregated_tokens / cluster_counts
+                    global_token_indices = temp_merged_global_indices[cluster_center_indices]
+                else:
+                    aggregated_tokens = temp_merged_tokens
+                    global_token_indices = temp_merged_global_indices
+                    
+                all_tokens.append(aggregated_tokens)
+                all_global_indices.append(global_token_indices)
+        else:
+            for temp_merged_tokens, temp_merged_global_indices in zip(temp_merged_token_list, temp_merged_global_indices_list):
+                all_tokens.append(temp_merged_tokens)
+                all_global_indices.append(temp_merged_global_indices)
+
     segment_final_tokens = torch.cat(all_tokens, dim=0)  # (num_final_tokens, feat_dim)
     segment_final_global_indices = torch.cat(all_global_indices, dim=0)  # (num_final_tokens,)
     return segment_final_tokens, segment_final_global_indices
@@ -227,17 +250,18 @@ def additional_segment(
 
 
 @torch.no_grad()
-def dpc_knn(features: torch.Tensor, num_clusters: int, k: int = 7, valid_token_mask: Optional[torch.Tensor] = None) -> Tuple[torch.Tensor, torch.Tensor]:
+def dpc_knn(features: torch.Tensor, num_clusters: Union[int, List[int]], k: Union[int, List[int]] = 7, valid_token_mask: Optional[torch.Tensor] = None) -> Tuple[Union[torch.Tensor, List[torch.Tensor]], Union[torch.Tensor, List[torch.Tensor]]]:
     """Apply DPC-kNN clustering algorithm to the pooled image features, generating preliminary clustering result.
 
     Args:
         features (torch.Tensor): Pooled image features (temporal features), of shape (batch_size, seq_len, feat_dim).
-        num_clusters (int): The number of clusters.
-        k (int): The number of nearest neighbors to consider for local density. Default is 7.
+        num_clusters (int or List[int]): The number of clusters. If a list, specifies the number of clusters for each batch element.
+        k (int or List[int]): The number of nearest neighbors to consider for local density. Default is 7.
         valid_token_mask (Optional[torch.Tensor]): Boolean Mask indicating valid tokens, of shape (batch_size, seq_len). Default is None.
 
     Returns:
-        torch.Tensor: Cluster indices of shape (batch_size, seq_len).
+        Tuple[Union[torch.Tensor, List[torch.Tensor]], Union[torch.Tensor, List[torch.Tensor]]]: 
+            Cluster indices and cluster center indices. If num_clusters is a list, returns lists of tensors.
     """
     invalid_token_mask = ~valid_token_mask if valid_token_mask is not None else None
     bsz, seq_len, feat_dim = features.shape
@@ -248,11 +272,19 @@ def dpc_knn(features: torch.Tensor, num_clusters: int, k: int = 7, valid_token_m
     # Mask out invalid tokens
     if valid_token_mask is not None:
         dists = torch.masked_fill(dists, invalid_token_mask.unsqueeze(1).expand(-1, seq_len, -1), dists.max() + 1)
-    nearest_dist = torch.topk(dists, k=k, dim=-1, largest=False).values
-    density = torch.mean(-(nearest_dist**2), dim=-1).exp()
+        
+    max_k = max(k) if isinstance(k, list) else k
+    nearest_dist = torch.topk(dists, k=max_k, dim=-1, largest=False).values
+    
+    if isinstance(k, list):
+        density = torch.empty((bsz, seq_len), device=features.device, dtype=features.dtype)
+        for i in range(bsz):
+            density[i] = torch.mean(-(nearest_dist[i, :, :k[i]]**2), dim=-1).exp()
+    else:
+        density = torch.mean(-(nearest_dist**2), dim=-1).exp()
 
-    # Add little random noise to ensure no tokens have the same density.
-    density = density + torch.rand_like(density, device=density.device, dtype=density.dtype) * 1e-6
+    # ! [DISABLED] Add little random noise to ensure no tokens have the same density.
+    # density = density + torch.rand_like(density, device=density.device, dtype=density.dtype) * 1e-6
 
     # Ensure the density of the empty token be 0
     if valid_token_mask is not None:
@@ -266,18 +298,38 @@ def dpc_knn(features: torch.Tensor, num_clusters: int, k: int = 7, valid_token_m
 
     # Calculate clustering score (clustering centers have the highest score)
     score = dist * density
-    cluster_center_indices = torch.topk(score, k=num_clusters, dim=-1).indices
-
-    # Obtain the distance matrix w.r.t cluster centers (batch_size, seq_len, num_clusters)
-    dists = torch.gather(dists, dim=-1, index=cluster_center_indices.unsqueeze(1).expand(-1, seq_len, -1))
-    cluster_indices = torch.argmin(dists, dim=-1)
-    # Ensure each cluster center to merge with itself
-    cluster_indices.scatter_(
-        dim=-1,
-        index=cluster_center_indices,
-        src=torch.arange(num_clusters).to(cluster_indices).unsqueeze(0).expand(bsz, -1),
-    )
-    return cluster_indices, cluster_center_indices
+    if isinstance(num_clusters, int):
+        cluster_center_indices = torch.topk(score, k=num_clusters, dim=-1).indices
+        # Obtain the distance matrix w.r.t cluster centers (batch_size, seq_len, num_clusters)
+        dists = torch.gather(dists, dim=-1, index=cluster_center_indices.unsqueeze(1).expand(-1, seq_len, -1))
+        cluster_indices = torch.argmin(dists, dim=-1)
+        # Ensure each cluster center to merge with itself
+        cluster_indices.scatter_(
+            dim=-1,
+            index=cluster_center_indices,
+            src=torch.arange(num_clusters).to(cluster_indices).unsqueeze(0).expand(bsz, -1),
+        )
+        return cluster_indices, cluster_center_indices
+    else:
+        cluster_indices_list = []
+        cluster_center_indices_list = []
+        for i in range(bsz):
+            k_i = num_clusters[i]
+            if k_i == 0:
+                cluster_center_indices_list.append(torch.tensor([], dtype=torch.long, device=features.device))
+                cluster_indices_list.append(torch.zeros(seq_len, dtype=torch.long, device=features.device))
+                continue
+            cc_idx = torch.topk(score[i], k=k_i, dim=-1).indices
+            cluster_center_indices_list.append(cc_idx)
+            dists_i = torch.gather(dists[i], dim=-1, index=cc_idx.unsqueeze(0).expand(seq_len, -1))
+            c_idx = torch.argmin(dists_i, dim=-1)
+            c_idx.scatter_(
+                dim=-1,
+                index=cc_idx,
+                src=torch.arange(k_i).to(c_idx),
+            )
+            cluster_indices_list.append(c_idx)
+        return cluster_indices_list, cluster_center_indices_list
 
 
 def spatiotemporal_compression(
@@ -290,7 +342,7 @@ def spatiotemporal_compression(
     # since we pass the whole segment features, the lower bound should contain ADTS tokens.
     lower_bound = (flashvid_config.num_attn_div_tokens + flashvid_config.num_sttm_tokens) * num_frames
     normed_video_features = video_features / video_features.norm(p=2, dim=-1, keepdim=True)
-    cosine_similarities = torch.einsum("b n d, b m d -> b n m", normed_video_features[1:], normed_video_features[:-1])
+    cosine_similarities = torch.bmm(normed_video_features[1:], normed_video_features[:-1].transpose(1, 2))
     # Mask out the selected tokens.
     cosine_similarities[~token_mask[1:].unsqueeze(-1).expand(-1, -1, num_visual_tokens)] = -1.0
     cosine_similarities[~token_mask[:-1].unsqueeze(1).expand(-1, num_visual_tokens, -1)] = -1.0
@@ -329,9 +381,9 @@ def spatiotemporal_compression(
         if other_tokens.numel() > 0:
             # Distribute other tokens to the previous frame's tokens (anchor tokens)
             anchor_token_indices = frame_max_sim_indices[mask[frame_idx]]
-            assigned_one_hot = F.one_hot(anchor_token_indices, num_classes=num_visual_tokens).to(video_features.dtype)
-            aggregated_tokens = torch.einsum("m n, m d -> n d", assigned_one_hot, other_tokens)  # (num_visual_tokens, feat_dim)
-            aggregated_token_counts = assigned_one_hot.sum(dim=0)  # (num_visual_tokens,)
+            aggregated_tokens = torch.zeros((num_visual_tokens, feat_dim), dtype=video_features.dtype, device=video_features.device)
+            aggregated_tokens.scatter_add_(0, anchor_token_indices.unsqueeze(-1).expand(-1, feat_dim), other_tokens)  # (num_visual_tokens, feat_dim)
+            aggregated_token_counts = torch.bincount(anchor_token_indices, minlength=num_visual_tokens).to(video_features.dtype)  # (num_visual_tokens,)
             video_features[frame_idx - 1] += aggregated_tokens
             token_counts[frame_idx - 1] += aggregated_token_counts
             token_counts[frame_idx][mask[frame_idx]] = 0
