@@ -12,8 +12,6 @@ from llava.model.multimodal_encoder.siglip_encoder import (
 
 @torch.no_grad()
 def SigLipVisionTower_forward(self: SigLipVisionTower, images: torch.Tensor):
-    if not isinstance(images, torch.Tensor):
-        raise ValueError(f"Unexpected data type of images: {type(images)}. Only support torch.Tensor Now.")
     image_forward_outs = self.vision_tower(
         images.to(device=self.device, dtype=self.dtype),
         output_attentions=True,
@@ -68,4 +66,7 @@ def SigLipAttention_forward(
 
     attn_output = self.out_proj(attn_output)
 
-    return attn_output, attn_weights.mean(1).mean(1)
+    if getattr(self, "is_last_layer", False):
+        return attn_output, attn_weights.mean(1).mean(1)
+    else:
+        return attn_output, None

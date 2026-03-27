@@ -116,6 +116,7 @@ def flashvid(
         Qwen2Attention.forward = Qwen2Attention_forward
         Qwen2DecoderLayer.forward = Qwen2DecoderLayer_forward
         Qwen2Model.forward = Qwen2Model_forward
+        model.model.vision_tower.vision_model.encoder.layers[-1].self_attn.is_last_layer = True
     elif type(model) is Qwen2_5_VLForConditionalGeneration:  ## For Qwen2.5-VL
         Qwen2_5_VLAttention.forward = Qwen2_5_VLAttention_forward
         Qwen2_5_VLModel.get_video_features = Qwen2_5_VLModel_get_video_features
