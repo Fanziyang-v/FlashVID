@@ -45,6 +45,7 @@
 
 ## 📋Todo List
 
+- [ ] Optimize code efficiency
 - [x] Release FlashVID code on LLaVA-OneVision and LLaVA-Video.
 - [x] Release inference demos on different Video LLMs with FlashVID.
 - [x] Support evaluation using [LMMs-Eval](https://github.com/EvolvingLMMs-Lab/lmms-eval).
