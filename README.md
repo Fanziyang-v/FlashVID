@@ -144,11 +144,12 @@ This project is built upon recent open-source works: [FastV](https://github.com/
 If you find this project useful in your research, please consider citing:
 
 ```bib
-@inproceedings{fan2026flashvid,
-  title={FlashVID: Efficient Video Large Language Models via Training-free Tree-based Spatiotemporal Token Merging},
-  author={Fan, Ziyang and Chen, Keyu and Xing, Ruilong and Li, Yulin and Jiang, Li and Tian, Zhuotao},
-  booktitle={Proceedings of the 14th International Conference on Learning Representations},
-  year={2026}
+@inproceedings{
+    fan2026flashvid,
+    title={Flash{VID}: Efficient Video Large Language Models via Training-free Tree-based Spatiotemporal Token Merging},
+    author={Ziyang Fan and Keyu Chen and Ruilong Xing and Yulin Li and Li Jiang and Zhuotao Tian},
+    booktitle={The Fourteenth International Conference on Learning Representations},
+    year={2026}
 }
 ```
 
