@@ -1,7 +1,7 @@
 # FlashVID: Efficient Video Large Language Models via Training-free Tree-based Spatiotemporal Token Merging
 
 <div align="center">
-<a href="https://github.com/Fanziyang-v">Ziyang Fan</a><sup>1</sup>,&nbsp; <a href="https://github.com/Mirei124">Keyu Chen</a><sup>1</sup>,&nbsp; <a href="https://github.com/xrlexpert">Ruilong Xing</a><sup>1</sup>,&nbsp; <a href="https://github.com/yu-lin-li">Yulin Li</a><sup>1</sup>,&nbsp; <a href="https://github.com/llijiang">Li Jiang</a><sup>2,3</sup>,&nbsp; <a href="https://github.com/tianzhuotao">Zhuotao Tian</a><sup>1,3*</sup>&nbsp;
+<a href="https://scholar.google.com/citations?user=myU7V58AAAAJ&hl=en">Ziyang Fan</a><sup>1</sup>,&nbsp; <a href="https://github.com/Mirei124">Keyu Chen</a><sup>1</sup>,&nbsp; <a href="https://github.com/xrlexpert">Ruilong Xing</a><sup>1</sup>,&nbsp; <a href="https://scholar.google.com/citations?user=dQssXVsAAAAJ&hl=en">Yulin Li</a><sup>1</sup>,&nbsp; <a href="https://scholar.google.com/citations?user=5cIodxsAAAAJ&hl=en">Li Jiang</a><sup>2,3</sup>,&nbsp; <a href="https://scholar.google.com/citations?user=mEjhz-IAAAAJ&hl=en">Zhuotao Tian</a><sup>1,3*</sup>&nbsp;
 <br>
 <sup>1</sup> Harbin Institute of Technology (Shenzhen) &nbsp;&nbsp;&nbsp; <sup>2</sup> The Chinese University of Hong Kong (Shenzhen)<br> <sup>3</sup> Shenzhen Loop Area Institute
 <br>
