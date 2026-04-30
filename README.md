@@ -33,6 +33,7 @@
 
 ## 🔥News
 
+- [2026.05.01] 🔍Fix a potential OOM bug in manual [CLS] attention extraction in Qwen2.5-VL and Qwen3-VL.
 - [2026.02.10] 🚀Release our paper on arXiv.
 - [2026.02.06] 🍾Our paper has been selected as an **Oral Presentation** at **ICLR 2026**.
 - [2026.02.01] ✨Release FlashVID code and inference demos on *Qwen2.5-VL* and *Qwen3-VL*.
