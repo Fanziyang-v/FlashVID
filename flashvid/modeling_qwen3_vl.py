@@ -73,16 +73,24 @@ def Qwen3VLVisionAttention_forward(
 
     attn_weights = None
     if return_logits:
-        # Calculate attention weights manually.
+        # Calculate attention weights manually, frame by frame to save memory.
         num_frames = cu_seqlens.shape[0] - 1
         q, k = query_states.squeeze(0), key_states.squeeze(0)
-        # reshape to (seq_length, num_heads, head_dim)
-        q, k = q.transpose(0, 1), k.transpose(0, 1)
+        q = q.transpose(0, 1)
+        k = k.transpose(0, 1)
         q = q.reshape(num_frames, -1, self.num_heads, self.head_dim).permute(0, 2, 1, 3).contiguous()
         k = k.reshape(num_frames, -1, self.num_heads, self.head_dim).permute(0, 2, 1, 3).contiguous()
-        attn_weights = torch.matmul(q, k.transpose(-1, -2)) / self.head_dim**0.5
-        attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(q.dtype)
-        attn_weights = attn_weights.mean(1).mean(1)
+        
+        attn_weights_list = []
+        for i in range(num_frames):
+            qi = q[i] # (num_heads, seq_len_per_frame, head_dim)
+            ki = k[i] # (num_heads, seq_len_per_frame, head_dim)
+            attn_i = torch.matmul(qi, ki.transpose(-1, -2)) / self.head_dim**0.5
+            attn_i = nn.functional.softmax(attn_i, dim=-1, dtype=torch.float32).to(qi.dtype)
+            attn_i = attn_i.mean(0).mean(0) # (seq_len_per_frame,)
+            attn_weights_list.append(attn_i)
+        attn_weights = torch.stack(attn_weights_list, dim=0) # (num_frames, seq_len_per_frame)
+        
     attn_output = attn_output.reshape(seq_length, -1).contiguous()
     attn_output = self.proj(attn_output)
     return attn_output, attn_weights
