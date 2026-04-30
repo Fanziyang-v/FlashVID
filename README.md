@@ -149,7 +149,8 @@ If you find this project useful in your research, please consider citing:
     title={Flash{VID}: Efficient Video Large Language Models via Training-free Tree-based Spatiotemporal Token Merging},
     author={Ziyang Fan and Keyu Chen and Ruilong Xing and Yulin Li and Li Jiang and Zhuotao Tian},
     booktitle={The Fourteenth International Conference on Learning Representations},
-    year={2026}
+    year={2026},
+    url={https://openreview.net/forum?id=H6rDX4w6Al}
 }
 ```
 
